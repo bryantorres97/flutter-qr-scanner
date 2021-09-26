@@ -54,4 +54,45 @@ class DBProvider {
     ''');
     return res;
   }
+
+  Future<ScanModel?> obtenerScanPorId(int id) async {
+    final db = await database;
+    final res = await db.query('Scans', where: 'id = ?', whereArgs: [id]);
+    return res.isNotEmpty ? ScanModel.fromMap(res.first) : null;
+  }
+
+  Future<List<ScanModel>> obtenerScans() async {
+    final db = await database;
+    final res = await db.query('Scans');
+    return res.isNotEmpty
+        ? res.map((scan) => ScanModel.fromMap(scan)).toList()
+        : [];
+  }
+
+  Future<List<ScanModel>> obtenerScansPorTipo(String tipo) async {
+    final db = await database;
+    final res = await db.query('Scans', where: 'tipo = ?', whereArgs: [tipo]);
+    return res.isNotEmpty
+        ? res.map((scan) => ScanModel.fromMap(scan)).toList()
+        : [];
+  }
+
+  Future<int> actualizarScanPorId(ScanModel nuevoScan) async {
+    final db = await database;
+    final res = db.update('Scans', nuevoScan.toMap(),
+        where: 'id = ?', whereArgs: [nuevoScan.id]);
+    return res;
+  }
+
+  Future<int> borrarScanPorId(int id) async {
+    final db = await database;
+    final res = await db.delete('Scans', where: 'id = ?', whereArgs: [id]);
+    return res;
+  }
+
+  Future<int> borrarScans() async {
+    final db = await database;
+    final res = await db.delete('Scans');
+    return res;
+  }
 }
