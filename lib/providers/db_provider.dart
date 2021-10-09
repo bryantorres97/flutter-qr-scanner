@@ -39,7 +39,6 @@ class DBProvider {
   Future<int> nuevoScan(ScanModel scan) async {
     final db = await database;
     final res = await db.insert('Scans', scan.toMap());
-    print(res);
     return res;
   }
 

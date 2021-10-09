@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:qr_scanner/models/scan_model.dart';
+import 'package:qr_scanner/providers/db_provider.dart';
+import 'package:qr_scanner/providers/scan_provider.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:permission_handler/permission_handler.dart';
 
@@ -9,12 +13,19 @@ class ScanButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       elevation: 0,
-      onPressed: _leerQR,
+      onPressed: () {
+        _tempData();
+        // _leerQR(context);
+      },
       child: Icon(Icons.filter_center_focus),
     );
   }
 
-  void _leerQR() async {
+  _tempData() {
+    DBProvider.db.nuevoScan(new ScanModel(valor: 'https://www.facebook.com'));
+  }
+
+  _leerQR(BuildContext context) async {
     final status = await Permission.camera.status;
     if (status.isDenied) {
       openAppSettings();
@@ -25,7 +36,9 @@ class ScanButton extends StatelessWidget {
       print('Permiso concedido');
       String? cameraScanResult = await scanner.scan();
       if (cameraScanResult != null) {
-        print(cameraScanResult);
+        final scansProvider =
+            Provider.of<ScansProvider>(context, listen: false);
+        scansProvider.crearScan(cameraScanResult);
       }
     }
   }
