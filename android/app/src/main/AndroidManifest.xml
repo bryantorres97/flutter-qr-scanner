@@ -3,9 +3,20 @@
    <uses-permission android:name="android.permission.CAMERA" />
    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+   <queries>
+  <!-- If your app opens https URLs -->
+    <intent>
+      <action android:name="android.intent.action.VIEW" />
+      <data android:scheme="https" />
+    </intent>  
+   </queries>
    <application
         android:label="qr_scanner"
         android:icon="@mipmap/ic_launcher">
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyCf2nKIoi44H7-nyMajz1qDnY0D25T8Rb0"/>
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

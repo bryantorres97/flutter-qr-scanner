@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_scanner/models/scan_model.dart';
-import 'package:qr_scanner/providers/db_provider.dart';
 import 'package:qr_scanner/providers/scan_provider.dart';
+import 'package:qr_scanner/utils/utils.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:permission_handler/permission_handler.dart';
 
@@ -14,16 +13,17 @@ class ScanButton extends StatelessWidget {
     return FloatingActionButton(
       elevation: 0,
       onPressed: () {
-        _tempData();
-        // _leerQR(context);
+        // _tempData();
+        _leerQR(context);
       },
       child: Icon(Icons.filter_center_focus),
     );
   }
 
-  _tempData() {
-    DBProvider.db.nuevoScan(new ScanModel(valor: 'https://www.facebook.com'));
-  }
+  // _tempData() {
+  //   DBProvider.db.nuevoScan(new ScanModel(valor: 'geo:-1.240973,-78.627752'));
+  //   DBProvider.db.nuevoScan(new ScanModel(valor: 'https://www.fb.com/'));
+  // }
 
   _leerQR(BuildContext context) async {
     final status = await Permission.camera.status;
@@ -35,11 +35,11 @@ class ScanButton extends StatelessWidget {
       // Permiso concedido
       print('Permiso concedido');
       String? cameraScanResult = await scanner.scan();
-      if (cameraScanResult != null) {
-        final scansProvider =
-            Provider.of<ScansProvider>(context, listen: false);
-        scansProvider.crearScan(cameraScanResult);
-      }
+      if (cameraScanResult == null) return;
+
+      final scansProvider = Provider.of<ScansProvider>(context, listen: false);
+      final nuevoScan = await scansProvider.crearScan(cameraScanResult);
+      launchInWebViewWithJavaScript(context, nuevoScan);
     }
   }
 }
